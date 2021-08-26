@@ -19,6 +19,13 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { AuthService } from './auth/auth.service';
 import { TrainingService } from './training/training.service';
 
+import { AngularFireModule } from '@angular/fire';
+//import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+
+import { environment } from 'src/environments/environment';
+
 
 
 @NgModule({
@@ -41,10 +48,13 @@ import { TrainingService } from './training/training.service';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    AngularFireAuthModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule.enablePersistence()
   ],
   providers: [AuthService, TrainingService],
   bootstrap: [AppComponent],
   entryComponents: [StopTrainingComponent]
 })
-export class AppModule { }
+export class AppModule {  }
