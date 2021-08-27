@@ -29,6 +29,8 @@ import { UIService } from './shared/ui.service';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
+import { StoreModule } from '@ngrx/store';
+import { appReducer } from './app.reducer';
 
 
 
@@ -56,7 +58,8 @@ import { SignupComponent } from './auth/signup/signup.component';
     BrowserAnimationsModule,
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule.enablePersistence()
+    AngularFirestoreModule.enablePersistence(),
+    StoreModule.forRoot({ui: appReducer})
   ],
   providers: [AuthService, TrainingService, UIService],
   bootstrap: [AppComponent],

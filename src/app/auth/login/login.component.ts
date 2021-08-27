@@ -1,8 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
 import { UIService } from 'src/app/shared/ui.service';
 import { AuthService } from '../auth.service';
+
+import * as fromApp from '../../app.reducer';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +19,15 @@ export class LoginComponent implements OnInit, OnDestroy {
   isLoading = false;
   private loadingSubs: Subscription;
 
-  constructor(private authService: AuthService, private uiService: UIService) { }
+
+  //ngrx
+  isLoading$: Observable<boolean>;
+
+  constructor(private authService: AuthService, 
+    private uiService: UIService, 
+    private store: Store<{ ui: fromApp.State }>) { }
+
+
   ngOnDestroy(): void {
     if (this.loadingSubs) {
       this.loadingSubs.unsubscribe();
@@ -23,9 +35,15 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loadingSubs = this.uiService.loadingStateChanged.subscribe(isLoading => {
-      this.isLoading = isLoading;
-    });
+    
+    // this.loadingSubs = this.uiService.loadingStateChanged.subscribe(isLoading => {
+    //   this.isLoading = isLoading;
+    // });
+
+    //change above to ngrx below
+    
+    this.isLoading$ = this.store.pipe(map(state => state.ui.isLoading));
+
     this.loginForm = new FormGroup({
       email: new FormControl('', {
         validators: [Validators.required, Validators.email]
