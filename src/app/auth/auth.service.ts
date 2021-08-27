@@ -6,6 +6,8 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { User } from './user.model';
 import { AuthData } from './auth-data.model';
 import { TrainingService } from '../training/training.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { UIService } from '../shared/ui.service';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +17,10 @@ export class AuthService {
 
   constructor(private router: Router,
     private afAuth: AngularFireAuth,
-    private trainingService: TrainingService) { }
+    private trainingService: TrainingService,
+    private snackbar: MatSnackBar,
+    private uiService: UIService
+    ) { }
 
 
 
@@ -35,14 +40,21 @@ export class AuthService {
   }
 
   registerUser(authData: AuthData) {
+    this.uiService.loadingStateChanged.next(true);
 
     this.afAuth.createUserWithEmailAndPassword(authData.email, authData.password)
       .then(result => {
+        this.uiService.loadingStateChanged.next(false);
         console.log(result);
-        this.authSuccessfully();
+        //this.authSuccessfully();
       })
       .catch(error => {
+        this.uiService.loadingStateChanged.next(false);
         console.log(error);
+        this.uiService.showSnackbar(error.message, null, 3000);
+        // this.snackbar.open(error.message, null, {
+        //   duration: 3000
+        // });
       });
     // this.user = {
     //   email: authData.email,
@@ -53,14 +65,21 @@ export class AuthService {
   }
 
   login(authData: AuthData) {
+    this.uiService.loadingStateChanged.next(true);
     this.afAuth
       .signInWithEmailAndPassword(authData.email, authData.password)
       .then(result => {
+        this.uiService.loadingStateChanged.next(false);
         console.log(result);
         //this.authSuccessfully();
       })
       .catch(error => {
+        this.uiService.loadingStateChanged.next(false);
         console.log(error);
+        this.uiService.showSnackbar(error.message, null, 3000);
+        // this.snackbar.open(error.message, null, {
+        //   duration: 3000
+        // });
       });
   }
 
